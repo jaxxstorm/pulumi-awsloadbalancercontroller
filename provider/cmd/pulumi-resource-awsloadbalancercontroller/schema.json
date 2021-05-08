@@ -65,6 +65,7 @@
             "packageName": "@jaxxstorm/pulumi-awsloadbalancercontroller"
         },
         "python": {
+            "packageName": "jaxxstorm-pulumi-awsloadbalancercontroller",
             "requires": {
                 "pulumi": ">=3.0.0,<4.0.0",
                 "pulumi-kubernetes": ">=3.0.0,<4.0.0",

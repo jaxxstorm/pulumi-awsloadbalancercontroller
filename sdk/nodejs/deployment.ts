@@ -67,21 +67,21 @@ export interface DeploymentArgs {
     /**
      * Name of the cluster the loadbalancer controller is being installed in
      */
-    readonly clusterName: string;
+    clusterName: string;
     /**
      * Whether to install the CRDs for the LoadBalancer controller
      */
-    readonly installCRDs: boolean;
+    installCRDs: boolean;
     /**
      * The namespace to create to run the AWS Loadbalancer Controller in.
      */
-    readonly namespace: pulumi.Input<string>;
+    namespace: pulumi.Input<string>;
     /**
      * The OIDC issuer for your EKS cluster
      */
-    readonly oidcIssuer: string;
+    oidcIssuer: string;
     /**
      * The OIDC provider for your EKS cluster
      */
-    readonly oidcProvider: string;
+    oidcProvider: string;
 }

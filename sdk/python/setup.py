@@ -31,7 +31,7 @@ def readme():
         return f.read()
 
 
-setup(name='pulumi_awsloadbalancercontroller',
+setup(name='jaxxstorm-pulumi-awsloadbalancercontroller',
       version='${VERSION}',
       long_description=readme(),
       long_description_content_type='text/markdown',
@@ -40,7 +40,7 @@ setup(name='pulumi_awsloadbalancercontroller',
       },
       packages=find_packages(),
       package_data={
-          'pulumi_awsloadbalancercontroller': [
+          'jaxxstorm-pulumi-awsloadbalancercontroller': [
               'py.typed',
           ]
       },
