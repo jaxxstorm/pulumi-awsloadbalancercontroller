@@ -1,0 +1,64 @@
+{
+    "name": "awsloadbalancercontroller",
+    "resources": {
+        "awsloadbalancercontroller:index:deployment": {
+            "isComponent": true,
+            "inputProperties": {
+                "namespace": {
+                    "type": "string",
+                    "description": "The namespace to create to run the AWS Loadbalancer Controller in."
+                },
+                "oidcIssuer": {
+                    "type": "string",
+                    "description": "The OIDC issuer for your EKS cluster"
+                },
+                "oidcProvider": {
+                    "type": "string",
+                    "description": "The OIDC provider for your EKS cluster"
+                }
+            },
+            "requiredInputs": [
+                "namespace",
+                "oidcIssuer",
+                "oidcProvider"
+            ],
+            "plainInputs": [
+              "namespace",
+              "oidcIssuer",
+              "oidcProvider"  
+            ],
+            "properties": {
+            },
+            "required": []
+        }
+    },
+    "language": {
+        "csharp": {
+            "packageReferences": {
+                "Pulumi": "3.*",
+                "Pulumi.Aws": "4.*"
+            }
+        },
+        "go": {
+            "generateResourceContainerTypes": true,
+            "importBasePath": "github.com/jaxxstorm/pulumi-awsloadbalancercontroller/sdk/go/awsloadbalancercontroller"
+        },
+        "nodejs": {
+            "dependencies": {
+                "@pulumi/kubernetes": "^3.0.0",
+                "@pulumi/aws": "^4.0.0"
+            },
+            "devDependencies": {
+                "typescript": "^3.7.0"
+            },
+            "packageName": "@jaxxstorm/pulumi-awsloadbalancercontroller"
+        },
+        "python": {
+            "requires": {
+                "pulumi": ">=3.0.0,<4.0.0",
+                "pulumi-kubernetes": ">=3.0.0,<4.0.0",
+                "pulumi-aws": ">=4.0.0,<5.0.0"
+            }
+        }
+    }
+}

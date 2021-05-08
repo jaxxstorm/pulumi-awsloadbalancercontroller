@@ -25,8 +25,8 @@ func construct(ctx *pulumi.Context, typ, name string, inputs provider.ConstructI
 	options pulumi.ResourceOption) (*provider.ConstructResult, error) {
 	// TODO: Add support for additional component resources here.
 	switch typ {
-	case "xyz:index:StaticPage":
-		return constructStaticPage(ctx, name, inputs, options)
+	case AWSLBControllerToken:
+		return constructAWSLBController(ctx, name, inputs, options)
 	default:
 		return nil, errors.Errorf("unknown resource type %s", typ)
 	}
@@ -35,18 +35,18 @@ func construct(ctx *pulumi.Context, typ, name string, inputs provider.ConstructI
 // constructStaticPage is an implementation of Construct for the example StaticPage component.
 // It demonstrates converting the raw ConstructInputs to the component's args struct, creating
 // the component, and returning its URN and state (outputs).
-func constructStaticPage(ctx *pulumi.Context, name string, inputs provider.ConstructInputs,
+func constructAWSLBController(ctx *pulumi.Context, name string, inputs provider.ConstructInputs,
 	options pulumi.ResourceOption) (*provider.ConstructResult, error) {
 
 	// Copy the raw inputs to StaticPageArgs. `inputs.CopyTo` uses the types and `pulumi:` tags
 	// on the struct's fields to convert the raw values to the appropriate Input types.
-	args := &StaticPageArgs{}
+	args := &AWSLBControllerArgs{}
 	if err := inputs.CopyTo(args); err != nil {
 		return nil, errors.Wrap(err, "setting args")
 	}
 
 	// Create the component resource.
-	staticPage, err := NewStaticPage(ctx, name, args, options)
+	staticPage, err := NewAWSLBController(ctx, name, args, options)
 	if err != nil {
 		return nil, errors.Wrap(err, "creating component")
 	}

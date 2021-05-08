@@ -1,11 +1,12 @@
 {
-    "name": "@pulumi/xyz",
+    "name": "@jaxxstorm/pulumi-awsloadbalancercontroller",
     "version": "${VERSION}",
     "scripts": {
         "build": "tsc"
     },
     "dependencies": {
-        "@pulumi/aws": "^4.0.0"
+        "@pulumi/aws": "^4.0.0",
+        "@pulumi/kubernetes": "^3.0.0"
     },
     "devDependencies": {
         "typescript": "^3.7.0"
