@@ -15,17 +15,28 @@
                 "oidcProvider": {
                     "type": "string",
                     "description": "The OIDC provider for your EKS cluster"
+                },
+                "clusterName": {
+                    "type": "string",
+                    "description": "Name of the cluster the loadbalancer controller is being installed in"
+                },
+                "installCRDs": {
+                    "type": "boolean",
+                    "description": "Whether to install the CRDs for the LoadBalancer controller"
                 }
             },
             "requiredInputs": [
                 "namespace",
                 "oidcIssuer",
-                "oidcProvider"
+                "oidcProvider",
+                "clusterName",
+                "installCRDs"
             ],
             "plainInputs": [
-              "namespace",
               "oidcIssuer",
-              "oidcProvider"  
+              "oidcProvider",
+              "clusterName",
+              "installCRDs"
             ],
             "properties": {
             },

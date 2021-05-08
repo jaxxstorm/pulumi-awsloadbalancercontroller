@@ -418,10 +418,16 @@ github.com/pulumi/pulumi-aws/sdk/v4 v4.0.0 h1:hotld6lXp7a1LiPsAgcp3BrGgvj3O/IB5Q
 github.com/pulumi/pulumi-aws/sdk/v4 v4.0.0/go.mod h1:TCdXM+R0dW0CFco+lb3Q7qRYWmYxDbJ7EPWYzRVHWMw=
 github.com/pulumi/pulumi-kubernetes/sdk/v3 v3.0.0 h1:Z97mMkrA3pHLpysmhiQGN4O7cxJ4uPIUCiAcm8nGOe8=
 github.com/pulumi/pulumi-kubernetes/sdk/v3 v3.0.0/go.mod h1:Wgy4/LfbBAYwdFDQ1Cin5SUqLHuQ9qOGWV0ECabr+Bw=
+github.com/pulumi/pulumi-kubernetes/sdk/v3 v3.1.1 h1:TNq5DR5woPuQklAGVRsFwNZRVKQFgYJv+M52mdZKRYQ=
+github.com/pulumi/pulumi-kubernetes/sdk/v3 v3.1.1/go.mod h1:64rTBrwMhK/lWraxGCNkh36vxXNxUH1JHNH30wq2ygc=
+github.com/pulumi/pulumi-tls/sdk/v4 v4.0.0 h1:ZKyVLzJYR4K+qF0Rb6P7GmIwJ3pzkpycfVu1woCNQLY=
+github.com/pulumi/pulumi-tls/sdk/v4 v4.0.0/go.mod h1:TuY3oaCsS43h6/qxZp0uVTq3WTuujjkh35JFwbFZQvk=
 github.com/pulumi/pulumi/pkg/v3 v3.0.1-0.20210419234039-6a33b4b7ee41 h1:BMAQqKLndgu6sGHYWFhNa2tQX1WWHWIAWl8GvwCwiRc=
 github.com/pulumi/pulumi/pkg/v3 v3.0.1-0.20210419234039-6a33b4b7ee41/go.mod h1:XsgC0PpPdjzZAj9YyEMvtU0ei542zOGxS7M1EzFmH84=
 github.com/pulumi/pulumi/sdk/v3 v3.0.0 h1:zkragE05t1Rco/ymfqMU4UXdEmKMmOH0SXhUKQxujxQ=
 github.com/pulumi/pulumi/sdk/v3 v3.0.0/go.mod h1:GBHyQ7awNQSRmiKp/p8kIKrGrMOZeA/k2czoM/GOqds=
+github.com/pulumi/pulumi/sdk/v3 v3.2.0 h1:F2Mf8X/kkDHG4G2hRwUHGLMnfrzlx9n3PmoWy5BmN8Y=
+github.com/pulumi/pulumi/sdk/v3 v3.2.0/go.mod h1:GBHyQ7awNQSRmiKp/p8kIKrGrMOZeA/k2czoM/GOqds=
 github.com/rjeczalik/notify v0.9.2/go.mod h1:aErll2f0sUX9PXZnVNyeiObbmTlk5jnMoCa4QEjJeqM=
 github.com/rogpeppe/fastuuid v0.0.0-20150106093220-6724a57986af/go.mod h1:XWv6SoW27p1b0cqNHllgS5HIMJraePCO15w5zCzIWYg=
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=

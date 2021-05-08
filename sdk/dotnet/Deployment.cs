@@ -40,10 +40,22 @@ namespace Pulumi.Awsloadbalancercontroller
     public sealed class DeploymentArgs : Pulumi.ResourceArgs
     {
         /// <summary>
+        /// Name of the cluster the loadbalancer controller is being installed in
+        /// </summary>
+        [Input("clusterName", required: true)]
+        public string ClusterName { get; set; } = null!;
+
+        /// <summary>
+        /// Whether to install the CRDs for the LoadBalancer controller
+        /// </summary>
+        [Input("installCRDs", required: true)]
+        public bool InstallCRDs { get; set; } = null!;
+
+        /// <summary>
         /// The namespace to create to run the AWS Loadbalancer Controller in.
         /// </summary>
         [Input("namespace", required: true)]
-        public string Namespace { get; set; } = null!;
+        public Input<string> Namespace { get; set; } = null!;
 
         /// <summary>
         /// The OIDC issuer for your EKS cluster

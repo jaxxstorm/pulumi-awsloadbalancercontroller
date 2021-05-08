@@ -31,6 +31,12 @@ export class Deployment extends pulumi.ComponentResource {
         let inputs: pulumi.Inputs = {};
         opts = opts || {};
         if (!opts.id) {
+            if ((!args || args.clusterName === undefined) && !opts.urn) {
+                throw new Error("Missing required property 'clusterName'");
+            }
+            if ((!args || args.installCRDs === undefined) && !opts.urn) {
+                throw new Error("Missing required property 'installCRDs'");
+            }
             if ((!args || args.namespace === undefined) && !opts.urn) {
                 throw new Error("Missing required property 'namespace'");
             }
@@ -40,6 +46,8 @@ export class Deployment extends pulumi.ComponentResource {
             if ((!args || args.oidcProvider === undefined) && !opts.urn) {
                 throw new Error("Missing required property 'oidcProvider'");
             }
+            inputs["clusterName"] = args ? args.clusterName : undefined;
+            inputs["installCRDs"] = args ? args.installCRDs : undefined;
             inputs["namespace"] = args ? args.namespace : undefined;
             inputs["oidcIssuer"] = args ? args.oidcIssuer : undefined;
             inputs["oidcProvider"] = args ? args.oidcProvider : undefined;
@@ -57,9 +65,17 @@ export class Deployment extends pulumi.ComponentResource {
  */
 export interface DeploymentArgs {
     /**
+     * Name of the cluster the loadbalancer controller is being installed in
+     */
+    readonly clusterName: string;
+    /**
+     * Whether to install the CRDs for the LoadBalancer controller
+     */
+    readonly installCRDs: boolean;
+    /**
      * The namespace to create to run the AWS Loadbalancer Controller in.
      */
-    readonly namespace: string;
+    readonly namespace: pulumi.Input<string>;
     /**
      * The OIDC issuer for your EKS cluster
      */

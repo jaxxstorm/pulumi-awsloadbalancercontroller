@@ -22,6 +22,9 @@ func NewDeployment(ctx *pulumi.Context,
 		return nil, errors.New("missing one or more required arguments")
 	}
 
+	if args.Namespace == nil {
+		return nil, errors.New("invalid value for required argument 'Namespace'")
+	}
 	var resource Deployment
 	err := ctx.RegisterRemoteComponentResource("awsloadbalancercontroller:index:deployment", name, args, &resource, opts...)
 	if err != nil {
@@ -31,6 +34,10 @@ func NewDeployment(ctx *pulumi.Context,
 }
 
 type deploymentArgs struct {
+	// Name of the cluster the loadbalancer controller is being installed in
+	ClusterName string `pulumi:"clusterName"`
+	// Whether to install the CRDs for the LoadBalancer controller
+	InstallCRDs bool `pulumi:"installCRDs"`
 	// The namespace to create to run the AWS Loadbalancer Controller in.
 	Namespace string `pulumi:"namespace"`
 	// The OIDC issuer for your EKS cluster
@@ -41,8 +48,12 @@ type deploymentArgs struct {
 
 // The set of arguments for constructing a Deployment resource.
 type DeploymentArgs struct {
+	// Name of the cluster the loadbalancer controller is being installed in
+	ClusterName string
+	// Whether to install the CRDs for the LoadBalancer controller
+	InstallCRDs bool
 	// The namespace to create to run the AWS Loadbalancer Controller in.
-	Namespace string
+	Namespace pulumi.StringInput
 	// The OIDC issuer for your EKS cluster
 	OidcIssuer string
 	// The OIDC provider for your EKS cluster

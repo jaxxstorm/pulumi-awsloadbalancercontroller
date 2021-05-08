@@ -13,29 +13,59 @@ __all__ = ['DeploymentArgs', 'Deployment']
 @pulumi.input_type
 class DeploymentArgs:
     def __init__(__self__, *,
-                 namespace: str,
+                 cluster_name: str,
+                 install_crds: bool,
+                 namespace: pulumi.Input[str],
                  oidc_issuer: str,
                  oidc_provider: str):
         """
         The set of arguments for constructing a Deployment resource.
-        :param str namespace: The namespace to create to run the AWS Loadbalancer Controller in.
+        :param str cluster_name: Name of the cluster the loadbalancer controller is being installed in
+        :param bool install_crds: Whether to install the CRDs for the LoadBalancer controller
+        :param pulumi.Input[str] namespace: The namespace to create to run the AWS Loadbalancer Controller in.
         :param str oidc_issuer: The OIDC issuer for your EKS cluster
         :param str oidc_provider: The OIDC provider for your EKS cluster
         """
+        pulumi.set(__self__, "cluster_name", cluster_name)
+        pulumi.set(__self__, "install_crds", install_crds)
         pulumi.set(__self__, "namespace", namespace)
         pulumi.set(__self__, "oidc_issuer", oidc_issuer)
         pulumi.set(__self__, "oidc_provider", oidc_provider)
 
     @property
+    @pulumi.getter(name="clusterName")
+    def cluster_name(self) -> str:
+        """
+        Name of the cluster the loadbalancer controller is being installed in
+        """
+        return pulumi.get(self, "cluster_name")
+
+    @cluster_name.setter
+    def cluster_name(self, value: str):
+        pulumi.set(self, "cluster_name", value)
+
+    @property
+    @pulumi.getter(name="installCRDs")
+    def install_crds(self) -> bool:
+        """
+        Whether to install the CRDs for the LoadBalancer controller
+        """
+        return pulumi.get(self, "install_crds")
+
+    @install_crds.setter
+    def install_crds(self, value: bool):
+        pulumi.set(self, "install_crds", value)
+
+    @property
     @pulumi.getter
-    def namespace(self) -> str:
+    def namespace(self) -> pulumi.Input[str]:
         """
         The namespace to create to run the AWS Loadbalancer Controller in.
         """
         return pulumi.get(self, "namespace")
 
     @namespace.setter
-    def namespace(self, value: str):
+    def namespace(self, value: pulumi.Input[str]):
         pulumi.set(self, "namespace", value)
 
     @property
@@ -68,7 +98,9 @@ class Deployment(pulumi.ComponentResource):
     def __init__(__self__,
                  resource_name: str,
                  opts: Optional[pulumi.ResourceOptions] = None,
-                 namespace: Optional[str] = None,
+                 cluster_name: Optional[str] = None,
+                 install_crds: Optional[bool] = None,
+                 namespace: Optional[pulumi.Input[str]] = None,
                  oidc_issuer: Optional[str] = None,
                  oidc_provider: Optional[str] = None,
                  __props__=None):
@@ -76,7 +108,9 @@ class Deployment(pulumi.ComponentResource):
         Create a Deployment resource with the given unique name, props, and options.
         :param str resource_name: The name of the resource.
         :param pulumi.ResourceOptions opts: Options for the resource.
-        :param str namespace: The namespace to create to run the AWS Loadbalancer Controller in.
+        :param str cluster_name: Name of the cluster the loadbalancer controller is being installed in
+        :param bool install_crds: Whether to install the CRDs for the LoadBalancer controller
+        :param pulumi.Input[str] namespace: The namespace to create to run the AWS Loadbalancer Controller in.
         :param str oidc_issuer: The OIDC issuer for your EKS cluster
         :param str oidc_provider: The OIDC provider for your EKS cluster
         """
@@ -103,7 +137,9 @@ class Deployment(pulumi.ComponentResource):
     def _internal_init(__self__,
                  resource_name: str,
                  opts: Optional[pulumi.ResourceOptions] = None,
-                 namespace: Optional[str] = None,
+                 cluster_name: Optional[str] = None,
+                 install_crds: Optional[bool] = None,
+                 namespace: Optional[pulumi.Input[str]] = None,
                  oidc_issuer: Optional[str] = None,
                  oidc_provider: Optional[str] = None,
                  __props__=None):
@@ -120,6 +156,12 @@ class Deployment(pulumi.ComponentResource):
                 raise TypeError('__props__ is only valid when passed in combination with a valid opts.id to get an existing resource')
             __props__ = DeploymentArgs.__new__(DeploymentArgs)
 
+            if cluster_name is None and not opts.urn:
+                raise TypeError("Missing required property 'cluster_name'")
+            __props__.__dict__["cluster_name"] = cluster_name
+            if install_crds is None and not opts.urn:
+                raise TypeError("Missing required property 'install_crds'")
+            __props__.__dict__["install_crds"] = install_crds
             if namespace is None and not opts.urn:
                 raise TypeError("Missing required property 'namespace'")
             __props__.__dict__["namespace"] = namespace
