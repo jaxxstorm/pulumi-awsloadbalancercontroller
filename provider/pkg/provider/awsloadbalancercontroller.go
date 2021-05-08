@@ -663,12 +663,11 @@ func NewAWSLBController(ctx *pulumi.Context,
 	}
 
 	if args.InstallCRDs {
-		_, err = yaml.NewConfigFile(ctx, fmt.Sprintf("%s-crds", name), &yaml.ConfigFileArgs{
-			// File: []string{
-			// 	"https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/config/crd/bases/elbv2.k8s.aws_targetgroupbindings.yaml",
-			// 	"https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/config/crd/bases/elbv2.k8s.aws_ingressclassparams.yaml",
-			// },
-			File: "https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/config/crd/bases/elbv2.k8s.aws_targetgroupbindings.yaml",
+		_, err = yaml.NewConfigGroup(ctx, fmt.Sprintf("%s-crds", name), &yaml.ConfigGroupArgs{
+			YAML: []string{
+				ingressClassYAML,
+				targetGroupBindingsYAML,
+			},
 		})
 		if err != nil {
 			return nil, fmt.Errorf("error installing CRDs: %v", err)
