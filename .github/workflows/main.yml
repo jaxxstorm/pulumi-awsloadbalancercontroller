@@ -327,7 +327,7 @@ jobs:
         - 13.x
         pythonversion:
         - "3.7"
-name: master
+name: main
 "on":
   push:
     branches:
