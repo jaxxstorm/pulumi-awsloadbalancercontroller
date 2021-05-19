@@ -37,6 +37,12 @@ tasks:
       - rm -rf sdk/nodejs
       - cd provider/cmd/{{ .CODEGEN }} && go run . nodejs ../../../sdk/nodejs {{ .SCHEMA_PATH }}
 
+  generate:go:
+    desc: "Generate Go SDK"
+    cmds:
+      - rm -rf sdk/go
+      - cd provider/cmd/{{ .CODEGEN }} && go run . go ../../../sdk/go {{ .SCHEMA_PATH }}
+
   generate:sdks:
     desc: "Generate all SDKs"
     cmds:
@@ -82,6 +88,24 @@ tasks:
       - sed -i.bak -e "s/\$${VERSION}/${PYPI_VERSION}/g" -e "s/\$${PLUGIN_VERSION}/${VERSION}/g" ./bin/setup.py
       - rm ./bin/setup.py.bak
       - cd ./bin && python3 setup.py build sdist
+
+  build:dotnet:
+    desc: "Build dotnet SDK"
+    dir: sdk/dotnet
+    vars:
+      VERSION:
+        sh: pulumictl get version -r {{ .WORKING_DIR }} -p dotnet
+    cmds:
+      - echo "Not implemented"
+  
+  build:go:
+    desc: "Build Go SDK"
+    dir: sdk/go
+    vars:
+      VERSION:
+        sh: pulumictl get version -r {{ .WORKING_DIR }} -p go
+    cmds:
+      - task: generate:go
 
   build:sdks:
     desc: "Build all SDKs"
