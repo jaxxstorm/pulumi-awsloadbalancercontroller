@@ -23,6 +23,22 @@
                 "installCRDs": {
                     "type": "boolean",
                     "description": "Whether to install the CRDs for the LoadBalancer controller"
+                },
+                "ingressClass": {
+                    "type": "string",
+                    "description": "Ingress class for the controller to satisfy"
+                },
+                "awsRegion": {
+                    "type": "string",
+                    "description": "The AWS Region to deploy the controller to"
+                },
+                "imageName": {
+                    "type": "string",
+                    "description": "The Docker Image to use for the controller deployment"
+                },
+                "version": {
+                    "type": "string",
+                    "description": "The version of the AWS ingress controller to deploy"
                 }
             },
             "requiredInputs": [
@@ -36,7 +52,11 @@
               "oidcIssuer",
               "oidcProvider",
               "clusterName",
-              "installCRDs"
+              "installCRDs",
+              "ingressClass",
+              "awsRegion",
+              "imageName",
+              "version"
             ],
             "properties": {
             },

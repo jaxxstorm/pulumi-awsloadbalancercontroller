@@ -46,11 +46,15 @@ export class Deployment extends pulumi.ComponentResource {
             if ((!args || args.oidcProvider === undefined) && !opts.urn) {
                 throw new Error("Missing required property 'oidcProvider'");
             }
+            inputs["awsRegion"] = args ? args.awsRegion : undefined;
             inputs["clusterName"] = args ? args.clusterName : undefined;
+            inputs["imageName"] = args ? args.imageName : undefined;
+            inputs["ingressClass"] = args ? args.ingressClass : undefined;
             inputs["installCRDs"] = args ? args.installCRDs : undefined;
             inputs["namespace"] = args ? args.namespace : undefined;
             inputs["oidcIssuer"] = args ? args.oidcIssuer : undefined;
             inputs["oidcProvider"] = args ? args.oidcProvider : undefined;
+            inputs["version"] = args ? args.version : undefined;
         } else {
         }
         if (!opts.version) {
@@ -65,9 +69,21 @@ export class Deployment extends pulumi.ComponentResource {
  */
 export interface DeploymentArgs {
     /**
+     * The AWS Region to deploy the controller to
+     */
+    awsRegion?: string;
+    /**
      * Name of the cluster the loadbalancer controller is being installed in
      */
     clusterName: string;
+    /**
+     * The Docker Image to use for the controller deployment
+     */
+    imageName?: string;
+    /**
+     * Ingress class for the controller to satisfy
+     */
+    ingressClass?: string;
     /**
      * Whether to install the CRDs for the LoadBalancer controller
      */
@@ -84,4 +100,8 @@ export interface DeploymentArgs {
      * The OIDC provider for your EKS cluster
      */
     oidcProvider: string;
+    /**
+     * The version of the AWS ingress controller to deploy
+     */
+    version?: string;
 }

@@ -34,8 +34,14 @@ func NewDeployment(ctx *pulumi.Context,
 }
 
 type deploymentArgs struct {
+	// The AWS Region to deploy the controller to
+	AwsRegion *string `pulumi:"awsRegion"`
 	// Name of the cluster the loadbalancer controller is being installed in
 	ClusterName string `pulumi:"clusterName"`
+	// The Docker Image to use for the controller deployment
+	ImageName *string `pulumi:"imageName"`
+	// Ingress class for the controller to satisfy
+	IngressClass *string `pulumi:"ingressClass"`
 	// Whether to install the CRDs for the LoadBalancer controller
 	InstallCRDs bool `pulumi:"installCRDs"`
 	// The namespace to create to run the AWS Loadbalancer Controller in.
@@ -44,12 +50,20 @@ type deploymentArgs struct {
 	OidcIssuer string `pulumi:"oidcIssuer"`
 	// The OIDC provider for your EKS cluster
 	OidcProvider string `pulumi:"oidcProvider"`
+	// The version of the AWS ingress controller to deploy
+	Version *string `pulumi:"version"`
 }
 
 // The set of arguments for constructing a Deployment resource.
 type DeploymentArgs struct {
+	// The AWS Region to deploy the controller to
+	AwsRegion *string
 	// Name of the cluster the loadbalancer controller is being installed in
 	ClusterName string
+	// The Docker Image to use for the controller deployment
+	ImageName *string
+	// Ingress class for the controller to satisfy
+	IngressClass *string
 	// Whether to install the CRDs for the LoadBalancer controller
 	InstallCRDs bool
 	// The namespace to create to run the AWS Loadbalancer Controller in.
@@ -58,6 +72,8 @@ type DeploymentArgs struct {
 	OidcIssuer string
 	// The OIDC provider for your EKS cluster
 	OidcProvider string
+	// The version of the AWS ingress controller to deploy
+	Version *string
 }
 
 func (DeploymentArgs) ElementType() reflect.Type {

@@ -40,10 +40,28 @@ namespace Pulumi.Awsloadbalancercontroller
     public sealed class DeploymentArgs : Pulumi.ResourceArgs
     {
         /// <summary>
+        /// The AWS Region to deploy the controller to
+        /// </summary>
+        [Input("awsRegion")]
+        public string? AwsRegion { get; set; }
+
+        /// <summary>
         /// Name of the cluster the loadbalancer controller is being installed in
         /// </summary>
         [Input("clusterName", required: true)]
         public string ClusterName { get; set; } = null!;
+
+        /// <summary>
+        /// The Docker Image to use for the controller deployment
+        /// </summary>
+        [Input("imageName")]
+        public string? ImageName { get; set; }
+
+        /// <summary>
+        /// Ingress class for the controller to satisfy
+        /// </summary>
+        [Input("ingressClass")]
+        public string? IngressClass { get; set; }
 
         /// <summary>
         /// Whether to install the CRDs for the LoadBalancer controller
@@ -68,6 +86,12 @@ namespace Pulumi.Awsloadbalancercontroller
         /// </summary>
         [Input("oidcProvider", required: true)]
         public string OidcProvider { get; set; } = null!;
+
+        /// <summary>
+        /// The version of the AWS ingress controller to deploy
+        /// </summary>
+        [Input("version")]
+        public string? Version { get; set; }
 
         public DeploymentArgs()
         {

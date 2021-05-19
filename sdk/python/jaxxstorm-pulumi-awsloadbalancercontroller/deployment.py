@@ -17,7 +17,11 @@ class DeploymentArgs:
                  install_crds: bool,
                  namespace: pulumi.Input[str],
                  oidc_issuer: str,
-                 oidc_provider: str):
+                 oidc_provider: str,
+                 aws_region: Optional[str] = None,
+                 image_name: Optional[str] = None,
+                 ingress_class: Optional[str] = None,
+                 version: Optional[str] = None):
         """
         The set of arguments for constructing a Deployment resource.
         :param str cluster_name: Name of the cluster the loadbalancer controller is being installed in
@@ -25,12 +29,24 @@ class DeploymentArgs:
         :param pulumi.Input[str] namespace: The namespace to create to run the AWS Loadbalancer Controller in.
         :param str oidc_issuer: The OIDC issuer for your EKS cluster
         :param str oidc_provider: The OIDC provider for your EKS cluster
+        :param str aws_region: The AWS Region to deploy the controller to
+        :param str image_name: The Docker Image to use for the controller deployment
+        :param str ingress_class: Ingress class for the controller to satisfy
+        :param str version: The version of the AWS ingress controller to deploy
         """
         pulumi.set(__self__, "cluster_name", cluster_name)
         pulumi.set(__self__, "install_crds", install_crds)
         pulumi.set(__self__, "namespace", namespace)
         pulumi.set(__self__, "oidc_issuer", oidc_issuer)
         pulumi.set(__self__, "oidc_provider", oidc_provider)
+        if aws_region is not None:
+            pulumi.set(__self__, "aws_region", aws_region)
+        if image_name is not None:
+            pulumi.set(__self__, "image_name", image_name)
+        if ingress_class is not None:
+            pulumi.set(__self__, "ingress_class", ingress_class)
+        if version is not None:
+            pulumi.set(__self__, "version", version)
 
     @property
     @pulumi.getter(name="clusterName")
@@ -92,27 +108,83 @@ class DeploymentArgs:
     def oidc_provider(self, value: str):
         pulumi.set(self, "oidc_provider", value)
 
+    @property
+    @pulumi.getter(name="awsRegion")
+    def aws_region(self) -> Optional[str]:
+        """
+        The AWS Region to deploy the controller to
+        """
+        return pulumi.get(self, "aws_region")
+
+    @aws_region.setter
+    def aws_region(self, value: Optional[str]):
+        pulumi.set(self, "aws_region", value)
+
+    @property
+    @pulumi.getter(name="imageName")
+    def image_name(self) -> Optional[str]:
+        """
+        The Docker Image to use for the controller deployment
+        """
+        return pulumi.get(self, "image_name")
+
+    @image_name.setter
+    def image_name(self, value: Optional[str]):
+        pulumi.set(self, "image_name", value)
+
+    @property
+    @pulumi.getter(name="ingressClass")
+    def ingress_class(self) -> Optional[str]:
+        """
+        Ingress class for the controller to satisfy
+        """
+        return pulumi.get(self, "ingress_class")
+
+    @ingress_class.setter
+    def ingress_class(self, value: Optional[str]):
+        pulumi.set(self, "ingress_class", value)
+
+    @property
+    @pulumi.getter
+    def version(self) -> Optional[str]:
+        """
+        The version of the AWS ingress controller to deploy
+        """
+        return pulumi.get(self, "version")
+
+    @version.setter
+    def version(self, value: Optional[str]):
+        pulumi.set(self, "version", value)
+
 
 class Deployment(pulumi.ComponentResource):
     @overload
     def __init__(__self__,
                  resource_name: str,
                  opts: Optional[pulumi.ResourceOptions] = None,
+                 aws_region: Optional[str] = None,
                  cluster_name: Optional[str] = None,
+                 image_name: Optional[str] = None,
+                 ingress_class: Optional[str] = None,
                  install_crds: Optional[bool] = None,
                  namespace: Optional[pulumi.Input[str]] = None,
                  oidc_issuer: Optional[str] = None,
                  oidc_provider: Optional[str] = None,
+                 version: Optional[str] = None,
                  __props__=None):
         """
         Create a Deployment resource with the given unique name, props, and options.
         :param str resource_name: The name of the resource.
         :param pulumi.ResourceOptions opts: Options for the resource.
+        :param str aws_region: The AWS Region to deploy the controller to
         :param str cluster_name: Name of the cluster the loadbalancer controller is being installed in
+        :param str image_name: The Docker Image to use for the controller deployment
+        :param str ingress_class: Ingress class for the controller to satisfy
         :param bool install_crds: Whether to install the CRDs for the LoadBalancer controller
         :param pulumi.Input[str] namespace: The namespace to create to run the AWS Loadbalancer Controller in.
         :param str oidc_issuer: The OIDC issuer for your EKS cluster
         :param str oidc_provider: The OIDC provider for your EKS cluster
+        :param str version: The version of the AWS ingress controller to deploy
         """
         ...
     @overload
@@ -137,11 +209,15 @@ class Deployment(pulumi.ComponentResource):
     def _internal_init(__self__,
                  resource_name: str,
                  opts: Optional[pulumi.ResourceOptions] = None,
+                 aws_region: Optional[str] = None,
                  cluster_name: Optional[str] = None,
+                 image_name: Optional[str] = None,
+                 ingress_class: Optional[str] = None,
                  install_crds: Optional[bool] = None,
                  namespace: Optional[pulumi.Input[str]] = None,
                  oidc_issuer: Optional[str] = None,
                  oidc_provider: Optional[str] = None,
+                 version: Optional[str] = None,
                  __props__=None):
         if opts is None:
             opts = pulumi.ResourceOptions()
@@ -156,9 +232,12 @@ class Deployment(pulumi.ComponentResource):
                 raise TypeError('__props__ is only valid when passed in combination with a valid opts.id to get an existing resource')
             __props__ = DeploymentArgs.__new__(DeploymentArgs)
 
+            __props__.__dict__["aws_region"] = aws_region
             if cluster_name is None and not opts.urn:
                 raise TypeError("Missing required property 'cluster_name'")
             __props__.__dict__["cluster_name"] = cluster_name
+            __props__.__dict__["image_name"] = image_name
+            __props__.__dict__["ingress_class"] = ingress_class
             if install_crds is None and not opts.urn:
                 raise TypeError("Missing required property 'install_crds'")
             __props__.__dict__["install_crds"] = install_crds
@@ -171,6 +250,7 @@ class Deployment(pulumi.ComponentResource):
             if oidc_provider is None and not opts.urn:
                 raise TypeError("Missing required property 'oidc_provider'")
             __props__.__dict__["oidc_provider"] = oidc_provider
+            __props__.__dict__["version"] = version
         super(Deployment, __self__).__init__(
             'awsloadbalancercontroller:index:deployment',
             resource_name,

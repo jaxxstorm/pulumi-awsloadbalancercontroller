@@ -9,7 +9,6 @@ const loadbalancer = new lb.Deployment("test", {
     clusterName: "pulumi-nginx-demo-eksCluster-aa2add8",
 })
 
-#
 /*
 const example = new k8s.yaml.ConfigFile("2048", {
     file: "https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/examples/2048/2048_full.yaml",

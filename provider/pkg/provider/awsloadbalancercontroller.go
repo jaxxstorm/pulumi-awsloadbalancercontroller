@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/pulumi/pulumi-aws/sdk/v4/go/aws/iam"
+	awsconfig "github.com/pulumi/pulumi-aws/sdk/v4/go/aws/config"
 	addregv1 "github.com/pulumi/pulumi-kubernetes/sdk/v3/go/kubernetes/admissionregistration/v1"
 	appsv1 "github.com/pulumi/pulumi-kubernetes/sdk/v3/go/kubernetes/apps/v1"
 	corev1 "github.com/pulumi/pulumi-kubernetes/sdk/v3/go/kubernetes/core/v1"
@@ -24,6 +25,11 @@ type AWSLBControllerArgs struct {
 	OidcIssuer   string             `pulumi:"oidcIssuer"`
 	OidcProvider string             `pulumi:"oidcProvider"`
 	InstallCRDs  bool               `pulumi:"installCRDs"`
+	IngressClass string             `pulumi:"ingressClass"`
+	AwsRegion    string             `pulumi:"awsRegion"`
+	ImageName    string             `pulumi:"imageName"`
+	Version      string             `pulumi:"version"`
+	Replicas     int    			`pulumi:replicas"`
 }
 
 // The AWSLBController component resource.
@@ -42,6 +48,41 @@ func NewAWSLBController(ctx *pulumi.Context,
 	err := ctx.RegisterComponentResource(AWSLBControllerToken, name, component, opts...)
 	if err != nil {
 		return nil, err
+	}
+
+	var ingressClass string
+	if args.IngressClass == "" {
+		ingressClass = "alb"
+	} else {
+		ingressClass = args.IngressClass
+	}
+
+	var awsRegion string
+	if args.AwsRegion == "" {
+		awsRegion = awsconfig.GetRegion(ctx)
+	} else {
+		awsRegion = args.AwsRegion
+	}
+
+	var imageName string
+	if args.ImageName == "" {
+		imageName = "amazon/aws-alb-ingress-controller"
+	} else {
+		imageName = args.ImageName
+	}
+
+	var version string
+	if args.Version == "" {
+		version = "v2.1.3"
+	} else {
+		version = args.Version
+	}
+
+	var replicas int
+	if args.Replicas == 0 {
+		replicas = 3
+	} else {
+		replicas = args.Replicas
 	}
 
 	var namespace *corev1.Namespace
@@ -381,18 +422,12 @@ func NewAWSLBController(ctx *pulumi.Context,
 	certRequest, err := tls.NewCertRequest(ctx, fmt.Sprintf("%s-webhook-cert-request", name), &tls.CertRequestArgs{
 		KeyAlgorithm:  pulumi.String("RSA"),
 		PrivateKeyPem: certKey.PrivateKeyPem,
-		DnsNames: pulumi.StringArray{ // FIXME: we shouldn't need to rerun this
-			pulumi.All(webhookSvc.Metadata.Name().Elem(), namespace.Metadata.Name().Elem()).ApplyT(func(args interface{}) string {
-				webhookName := args.([]interface{})[0].(string)
-				namespaceName := args.([]interface{})[1].(string)
-				return fmt.Sprintf("%s.%s", webhookName, namespaceName)
-			}).(pulumi.StringOutput),
-			pulumi.All(webhookSvc.Metadata.Name().Elem(), namespace.Metadata.Name().Elem()).ApplyT(func(args interface{}) string {
-				webhookName := args.([]interface{})[0].(string)
-				namespaceName := args.([]interface{})[1].(string)
-				return fmt.Sprintf("%s.%s.svc", webhookName, namespaceName)
-			}).(pulumi.StringOutput),
-		},
+		DnsNames: pulumi.All(webhookSvc.Metadata.Name().Elem(), namespace.Metadata.Name().Elem()).ApplyT(func(args interface{}) []string {
+			webhookName := args.([]interface{})[0].(string)
+			namespaceName := args.([]interface{})[1].(string)
+			certName := fmt.Sprintf("%s.%s", webhookName, namespaceName)
+			return []string{certName, fmt.Sprintf("%s.svc", certName), fmt.Sprintf("%s.svc.cluster.local", certName)}
+		}).(pulumi.StringArrayOutput),
 		Subjects: &tls.CertRequestSubjectArray{
 			&tls.CertRequestSubjectArgs{
 				CommonName: webhookSvc.Metadata.Name().Elem(),
@@ -440,7 +475,7 @@ func NewAWSLBController(ctx *pulumi.Context,
 			Namespace: namespace.Metadata.Name().Elem(),
 		},
 		Spec: &appsv1.DeploymentSpecArgs{
-			Replicas: pulumi.Int(1), // FIXME: make configurable
+			Replicas: pulumi.Int(replicas),
 			Selector: &metav1.LabelSelectorArgs{
 				MatchLabels: labels,
 			},
@@ -467,8 +502,8 @@ func NewAWSLBController(ctx *pulumi.Context,
 							Name: pulumi.String("aws-load-balancer-controller"),
 							Args: pulumi.StringArray{
 								pulumi.Sprintf("--cluster-name=%s", args.ClusterName),
-								pulumi.String("--aws-region=us-west-2"), // FIXME: make region configurable
-								pulumi.String("--ingress-class=alb"),    // FIXME: make ingress class configurable
+								pulumi.Sprintf("--aws-region=%s", awsRegion),
+								pulumi.Sprintf("--ingress-class=%s", ingressClass),
 							},
 							Command: pulumi.StringArray{
 								pulumi.String("/controller"),
@@ -479,7 +514,7 @@ func NewAWSLBController(ctx *pulumi.Context,
 								RunAsNonRoot:             pulumi.Bool(true),
 							},
 							ImagePullPolicy: pulumi.String("IfNotPresent"),
-							Image:           pulumi.String("amazon/aws-alb-ingress-controller:v2.1.3"),
+							Image:           pulumi.Sprintf("%s:%s", imageName, version),
 							VolumeMounts: &corev1.VolumeMountArray{
 								&corev1.VolumeMountArgs{
 									MountPath: pulumi.String("/tmp/k8s-webhook-server/serving-certs"),
