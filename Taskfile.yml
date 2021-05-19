@@ -101,9 +101,6 @@ tasks:
   build:go:
     desc: "Build Go SDK"
     dir: sdk/go
-    vars:
-      VERSION:
-        sh: pulumictl get version -r {{ .WORKING_DIR }} -p go
     cmds:
       - task: generate:go
 
