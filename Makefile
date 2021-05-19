@@ -12,7 +12,7 @@ SCHEMA_PATH     := ${WORKING_DIR}/provider/cmd/${PROVIDER}/schema.json
 
 generate:: gen_go_sdk gen_dotnet_sdk gen_nodejs_sdk gen_python_sdk
 
-build:: build_provider build_nodejs_sdk build_python_sdk
+build:: build_provider build_nodejs_sdk build_python_sdk build_dotnet_sdk build_go_sdk
 
 install:: install_provider install_nodejs_sdk
 
