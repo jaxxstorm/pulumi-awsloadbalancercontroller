@@ -1,0 +1,33 @@
+archives:
+- id: archive
+  name_template: '{{ .Binary }}-{{ .Tag }}-{{ .Os }}-{{ .Arch }}'
+before:
+  hooks:
+  - make tfgen
+uploads:
+- name: bintray
+  target: https://api.bintray.com/content/jaxxstorm/pulumi/pulumi-awsloadbalancercontroller/{{ .Tag }}
+  username: jaxxstorm
+  mode: archive
+  method: PUT
+builds:
+- binary: pulumi-resource-awsloadbalancercontroller
+  dir: provider
+  env:
+  - CGO_ENABLED=0
+  - GO111MODULE=on
+  goarch:
+  - amd64
+  goos:
+  - darwin
+  - windows
+  - linux
+  ldflags:
+  - -X github.com/jaxxstorm/pulumi-awsloadbalancercontroller/provider/pkg/version.Version={{.Tag}}
+  main: ./cmd/pulumi-resource-awsloadbalancercontroller/
+changelog:
+  skip: true
+release:
+  disable: true
+snapshot:
+  name_template: '{{ .Tag }}-SNAPSHOT'
