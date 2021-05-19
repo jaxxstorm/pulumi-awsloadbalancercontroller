@@ -14,7 +14,6 @@ env:
 jobs:
   build_sdk:
     name: build_sdk
-    needs: prerequisites
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
@@ -114,40 +113,6 @@ jobs:
       uses: pulumi/action-install-pulumi-cli@b811287a6e06bb7e5d8b91132b839c67e3f9c6ed
     - name: Run golangci
       run: make lint_provider
-  prerequisites:
-    name: prerequisites
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v2
-    - name: Checkout Scripts Repo
-      uses: actions/checkout@v2
-      with:
-        path: ci-scripts
-        repository: pulumi/scripts
-    - name: Unshallow clone for tags
-      run: git fetch --prune --unshallow --tags
-    - name: Install Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.goversion }}
-    - name: Install pulumictl
-      uses: jaxxstorm/action-install-gh-release@d62853bc9e466834c74cefb34fad78535582e21a
-      with:
-        repo: pulumi/pulumictl
-    - name: Install Pulumi CLI
-      uses: pulumi/action-install-pulumi-cli@b811287a6e06bb7e5d8b91132b839c67e3f9c6ed
-    - name: Build tfgen & provider binaries
-      run: make provider
-    - name: Tar provider binaries
-      run: tar -zcf ${{ github.workspace }}/bin/provider.tar.gz -C ${{ github.workspace
-        }}/bin/ pulumi-resource-${{ env.PROVIDER }} pulumi-tfgen-${{ env.PROVIDER
-        }}
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ env.PROVIDER }}-provider.tar.gz
-        path: ${{ github.workspace }}/bin/provider.tar.gz
   publish:
     name: publish
     needs: test
