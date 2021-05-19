@@ -6,8 +6,8 @@ import (
 
 	"fmt"
 
-	"github.com/pulumi/pulumi-aws/sdk/v4/go/aws/iam"
 	awsconfig "github.com/pulumi/pulumi-aws/sdk/v4/go/aws/config"
+	"github.com/pulumi/pulumi-aws/sdk/v4/go/aws/iam"
 	addregv1 "github.com/pulumi/pulumi-kubernetes/sdk/v3/go/kubernetes/admissionregistration/v1"
 	appsv1 "github.com/pulumi/pulumi-kubernetes/sdk/v3/go/kubernetes/apps/v1"
 	corev1 "github.com/pulumi/pulumi-kubernetes/sdk/v3/go/kubernetes/core/v1"
@@ -29,7 +29,7 @@ type AWSLBControllerArgs struct {
 	AwsRegion    string             `pulumi:"awsRegion"`
 	ImageName    string             `pulumi:"imageName"`
 	Version      string             `pulumi:"version"`
-	Replicas     int    			`pulumi:replicas"`
+	Replicas     int                `pulumi:"replicas"`
 }
 
 // The AWSLBController component resource.
@@ -619,9 +619,7 @@ func NewAWSLBController(ctx *pulumi.Context,
 							Key:      pulumi.String("elbv2.k8s.aws/pod-readiness-gate-inject"),
 							Operator: pulumi.String("In"),
 							Values: pulumi.StringArray{
-								pulumi.String(
-									pulumi.String("enabled"),
-								),
+								pulumi.String("enabled"),
 							},
 						},
 					},

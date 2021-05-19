@@ -1,6 +1,7 @@
 package provider
 
 import (
+	// Embed necessary
 	_ "embed"
 )
 
