@@ -1,9 +1,6 @@
 archives:
 - id: archive
   name_template: '{{ .Binary }}-{{ .Tag }}-{{ .Os }}-{{ .Arch }}'
-before:
-  hooks:
-  - make tfgen
 uploads:
 - name: bintray
   target: https://api.bintray.com/content/jaxxstorm/pulumi/pulumi-awsloadbalancercontroller/{{ .Tag }}

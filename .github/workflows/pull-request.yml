@@ -11,7 +11,7 @@ env:
   PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
 jobs:
   build_provider:
-    name: publish
+    name: Build Provider
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
@@ -39,7 +39,7 @@ jobs:
       env:
         UPLOAD_BINTRAY_SECRET: ${{ secrets.UPLOAD_BINTRAY_SECRET }}
   build_sdk:
-    name: build_sdk
+    name: Build ${{ matrix.language }}
     runs-on: ubuntu-latest
     needs: build_provider
     steps:
