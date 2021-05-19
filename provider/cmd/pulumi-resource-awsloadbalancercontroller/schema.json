@@ -1,0 +1,96 @@
+{
+    "name": "awsloadbalancercontroller",
+    "resources": {
+        "awsloadbalancercontroller:index:deployment": {
+            "isComponent": true,
+            "inputProperties": {
+                "namespace": {
+                    "type": "string",
+                    "description": "The namespace to create to run the AWS Loadbalancer Controller in."
+                },
+                "oidcIssuer": {
+                    "type": "string",
+                    "description": "The OIDC issuer for your EKS cluster"
+                },
+                "oidcProvider": {
+                    "type": "string",
+                    "description": "The OIDC provider for your EKS cluster"
+                },
+                "clusterName": {
+                    "type": "string",
+                    "description": "Name of the cluster the loadbalancer controller is being installed in"
+                },
+                "installCRDs": {
+                    "type": "boolean",
+                    "description": "Whether to install the CRDs for the LoadBalancer controller"
+                },
+                "ingressClass": {
+                    "type": "string",
+                    "description": "Ingress class for the controller to satisfy"
+                },
+                "awsRegion": {
+                    "type": "string",
+                    "description": "The AWS Region to deploy the controller to"
+                },
+                "imageName": {
+                    "type": "string",
+                    "description": "The Docker Image to use for the controller deployment"
+                },
+                "version": {
+                    "type": "string",
+                    "description": "The version of the AWS ingress controller to deploy"
+                }
+            },
+            "requiredInputs": [
+                "namespace",
+                "oidcIssuer",
+                "oidcProvider",
+                "clusterName",
+                "installCRDs"
+            ],
+            "plainInputs": [
+              "oidcIssuer",
+              "oidcProvider",
+              "clusterName",
+              "installCRDs",
+              "ingressClass",
+              "awsRegion",
+              "imageName",
+              "version"
+            ],
+            "properties": {
+            },
+            "required": []
+        }
+    },
+    "language": {
+        "csharp": {
+            "packageReferences": {
+                "Pulumi": "3.*",
+                "Pulumi.Aws": "4.*"
+            }
+        },
+        "go": {
+            "generateResourceContainerTypes": true,
+            "importBasePath": "github.com/jaxxstorm/pulumi-awsloadbalancercontroller/sdk/go/awsloadbalancercontroller"
+        },
+        "nodejs": {
+            "dependencies": {
+                "@pulumi/kubernetes": "^3.0.0",
+                "@pulumi/aws": "^4.0.0"
+            },
+            "devDependencies": {
+                "typescript": "^3.7.0"
+            },
+            "packageName": "@jaxxstorm/pulumi-awsloadbalancercontroller"
+        },
+        "python": {
+            "packageName": "jaxxstorm-pulumi-awsloadbalancercontroller",
+            "requires": {
+                "pulumi": ">=3.0.0,<4.0.0",
+                "pulumi-kubernetes": ">=3.0.0,<4.0.0",
+                "pulumi-aws": ">=4.0.0,<5.0.0"
+            }
+        }
+    }
+}
