@@ -1,6 +1,6 @@
-# AWS LoadBalancer Controller Pulumi Component Provider (Go)
+# AWS LoadBalancer Controller Pulumi Package
 
-This repo is a [Pulumi Package](https://www.pulumi.com/docs/guides/pulumi-packages/ representing the [AWS Load Balancer Controller](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html). It installs everything needed to run an AWS Load Balancer Controller in an [Amazon EKS](https://aws.amazon.com/eks/) cluster. It will install:
+This repo is a [Pulumi Package](https://www.pulumi.com/docs/guides/pulumi-packages/) representing the [AWS Load Balancer Controller](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html). It installs everything needed to run an AWS Load Balancer Controller in an [Amazon EKS](https://aws.amazon.com/eks/) cluster. It will install:
 
   - An adequately scoped IAM role
   - A Kubernetes deployment, with configurable replicas
