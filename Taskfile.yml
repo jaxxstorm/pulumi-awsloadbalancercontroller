@@ -38,11 +38,19 @@ tasks:
       - rm -rf sdk/go
       - cd provider/cmd/{{ .CODEGEN }} && go run . go ../../../sdk/go {{ .SCHEMA_PATH }}
 
+  generate:dotnet:
+    desc: "Generate DotNet SDK"
+    cmds:
+      - rm -rf sdk/dotnet
+      - cd provider/cmd/{{ .CODEGEN }} && go run . dotnet ../../../sdk/dotnet {{ .SCHEMA_PATH }}
+
   generate:sdks:
     desc: "Generate all SDKs"
     cmds:
       - task: generate:python
       - task: generate:nodejs
+      - task: generate:go
+      - task: generate:dotnet
 
   build:provider:
     desc: Build the provider binary
@@ -91,7 +99,8 @@ tasks:
       VERSION:
         sh: pulumictl get version -r {{ .WORKING_DIR }} -p dotnet
     cmds:
-      - echo "Not implemented"
+      - echo "{{ .VERSION }}" >version.txt
+      - dotnet build /p:Version={{ .VERSION }}
   
   build:go:
     desc: "Build Go SDK"
@@ -104,5 +113,7 @@ tasks:
     cmds:
       - task: build:python
       - task: build:nodejs
+      - task: build:go
+      - task: build:dotnet
 
 
