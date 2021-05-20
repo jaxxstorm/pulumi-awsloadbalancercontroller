@@ -1,5 +1,6 @@
 {
     "name": "awsloadbalancercontroller",
+    "pluginDownloadURL": "https://lbriggs.jfrog.io/artifactory/pulumi-packages/pulumi-awsloadbalancercontroller",
     "resources": {
         "awsloadbalancercontroller:index:deployment": {
             "isComponent": true,

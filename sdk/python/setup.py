@@ -12,7 +12,7 @@ class InstallPluginCommand(install):
     def run(self):
         install.run(self)
         try:
-            check_call(['pulumi', 'plugin', 'install', 'resource', 'awsloadbalancercontroller', '${PLUGIN_VERSION}'])
+            check_call(['pulumi', 'plugin', 'install', 'resource', 'awsloadbalancercontroller', '${PLUGIN_VERSION}', '--server', 'https://lbriggs.jfrog.io/artifactory/pulumi-packages/pulumi-awsloadbalancercontroller'])
         except OSError as error:
             if error.errno == errno.ENOENT:
                 print("""

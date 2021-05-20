@@ -1,20 +1,47 @@
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GO111MODULE: "on"
-  NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-  NPM_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-  NUGET_PUBLISH_KEY: ${{ secrets.NUGET_TOKEN }}
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  NUGET_PUBLISH_KEY: ${{ secrets.NUGET_PUBLISH_KEY }}
   PROVIDER: awsloadbalancercontroller
   PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
   PULUMI_API: https://api.pulumi.com
   PULUMI_LOCAL_NUGET: ${{ github.workspace }}/nuget
   PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-  PYPI_USERNAME: __token__
-  TRAVIS_OS_NAME: linux
 jobs:
-  build_sdk:
-    name: build_sdk
+  publish_provider:
+    name: Publish Provider
     runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Unshallow clone for tags
+      run: git fetch --prune --unshallow --tags
+    - name: Setup Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16.x
+    - name: Install pulumictl
+      uses: jaxxstorm/action-install-gh-release@v1.1.0
+      with:
+        repo: pulumi/pulumictl
+    - name: Install Pulumi CLI
+      uses: pulumi/action-install-pulumi-cli@v1.0.1
+    - name: Set PreRelease Version
+      run: |
+        echo "GORELEASER_CURRENT_TAG=v$(pulumictl get version --language generic)" >> $GITHUB_ENV
+    - name: Run GoReleaser
+      uses: goreleaser/goreleaser-action@v2
+      with:
+        args: -f .goreleaser.yml --rm-dist
+        version: latest
+      env:
+        ARTIFACTORY_LBRIGGS_SECRET: ${{ secrets.ARTIFACTORY_LBRIGGS_SECRET }}
+  build_sdk:
+    name: Build ${{ matrix.language }}
+    runs-on: ubuntu-latest
+    needs: build_provider
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
@@ -30,11 +57,11 @@ jobs:
       with:
         go-version: ${{ matrix.goversion }}
     - name: Install pulumictl
-      uses: jaxxstorm/action-install-gh-release@d62853bc9e466834c74cefb34fad78535582e21a
+      uses: jaxxstorm/action-install-gh-release@v1.1.0
       with:
         repo: pulumi/pulumictl
     - name: Install Pulumi CLI
-      uses: pulumi/action-install-pulumi-cli@b811287a6e06bb7e5d8b91132b839c67e3f9c6ed
+      uses: pulumi/action-install-pulumi-cli@v1.0.1
     - name: Setup Node
       uses: actions/setup-node@v1
       with:
@@ -48,24 +75,14 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{matrix.pythonversion}}
-    - name: Download provider + tfgen binaries
-      uses: actions/download-artifact@v2
-      with:
-        name: ${{ env.PROVIDER }}-provider.tar.gz
-        path: ${{ github.workspace }}/bin
-    - name: Untar provider binaries
-      run: tar -zxf ${{ github.workspace }}/bin/provider.tar.gz -C ${{ github.workspace
-        }}/bin
-    - name: Restore binary perms
-      run: find ${{ github.workspace }} -name "pulumi-*-${{ env.PROVIDER }}" -print
-        -exec chmod +x {} \;
+    - name: Install Taskfile
+      uses: Arduino/actions/setup-taskfile@master
     - name: Build SDK
-      run: make build_${{ matrix.language }}
+      run: task build:${{ matrix.language }}
     - name: Check worktree clean
       run: ./ci-scripts/ci/check-worktree-is-clean
     - name: Compress SDK folder
-      run: tar -zcf sdk/${{ matrix.language }}.tar.gz -C sdk/${{ matrix.language }}
-        .
+      run: tar -zcf sdk/${{ matrix.language }}.tar.gz -C sdk/${{ matrix.language }} .
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -77,82 +94,19 @@ jobs:
         dotnetversion:
         - 3.1.301
         goversion:
-        - 1.15.x
+        - 1.16.x
         language:
         - nodejs
         - python
         - dotnet
         - go
         nodeversion:
-        - 13.x
+        - 14.x
         pythonversion:
-        - "3.7"
-  lint:
-    container: golangci/golangci-lint:latest
-    name: lint
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v2
-    - name: Checkout Scripts Repo
-      uses: actions/checkout@v2
-      with:
-        path: ci-scripts
-        repository: pulumi/scripts
-    - name: Unshallow clone for tags
-      run: git fetch --prune --unshallow --tags
-    - name: Install Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.goversion }}
-    - name: Install pulumictl
-      uses: jaxxstorm/action-install-gh-release@d62853bc9e466834c74cefb34fad78535582e21a
-      with:
-        repo: pulumi/pulumictl
-    - name: Install Pulumi CLI
-      uses: pulumi/action-install-pulumi-cli@b811287a6e06bb7e5d8b91132b839c67e3f9c6ed
-    - name: Run golangci
-      run: make lint_provider
-  publish:
-    name: publish
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v2
-    - name: Unshallow clone for tags
-      run: git fetch --prune --unshallow --tags
-    - name: Checkout Scripts Repo
-      uses: actions/checkout@v2
-      with:
-        path: ci-scripts
-        repository: pulumi/scripts
-    - name: Setup Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.goversion }}
-    - name: Install pulumictl
-      uses: jaxxstorm/action-install-gh-release@d62853bc9e466834c74cefb34fad78535582e21a
-      with:
-        repo: pulumi/pulumictl
-    - name: Install Pulumi CLI
-      uses: pulumi/action-install-pulumi-cli@b811287a6e06bb7e5d8b91132b839c67e3f9c6ed
-    - name: Set PreRelease Version
-      run: |
-        echo "GORELEASER_CURRENT_TAG=v$(pulumictl get version --language generic)" >> $GITHUB_ENV
-    - name: Run GoReleaser
-      uses: goreleaser/goreleaser-action@v2
-      with:
-        args: -f .goreleaser.yml --rm-dist
-        version: latest
-      env:
-        UPLOAD_BINTRAY_SECRET: ${{ secrets.UPLOAD_BINTRAY_SECRET }}
-    - name: Bintray publish
-      run: |
-        curl -X POST -ujaxxstorm:${{ secrets.UPLOAD_BINTRAY_SECRET }} https://api.bintray.com/content/jaxxstorm/pulumi/pulumi-rke/${{ env.GORELEASER_CURRENT_TAG }}/publish
+        - "3.9"
   publish_sdk:
     name: publish_sdk
-    needs: publish
+    needs: [ build_sdk, publish_provider ]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
@@ -162,7 +116,7 @@ jobs:
       with:
         path: ci-scripts
         repository: pulumi/scripts
-        ref: 3411cb21fe253c2a65eaaf3a39db2320077ce675
+        ref: cd87b45d3187e45b5b9a7d99e885c9bcc436990a
     - name: Unshallow clone for tags
       run: git fetch --prune --unshallow --tags
     - name: Install Go
@@ -170,11 +124,11 @@ jobs:
       with:
         go-version: ${{ matrix.goversion }}
     - name: Install pulumictl
-      uses: jaxxstorm/action-install-gh-release@d62853bc9e466834c74cefb34fad78535582e21a
+      uses: jaxxstorm/action-install-gh-release@v1.1.0
       with:
         repo: pulumi/pulumictl
     - name: Install Pulumi CLI
-      uses: pulumi/action-install-pulumi-cli@b811287a6e06bb7e5d8b91132b839c67e3f9c6ed
+      uses: pulumi/action-install-pulumi-cli@v1.0.1
     - name: Setup Node
       uses: actions/setup-node@v1
       with:
@@ -207,93 +161,17 @@ jobs:
         path: ${{ github.workspace}}/sdk
     - name: Unzip DotNet SDK
       run: tar -zxf ${{ github.workspace}}/sdk/dotnet.tar.gz -C ${{ github.workspace}}/sdk/dotnet
-    - env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      name: Publish SDKs
-      run: ./ci-scripts/ci/publish-tfgen-package ${{ github.workspace }}
-  test:
-    name: test
-    needs: build_sdk
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v2
-    - name: Checkout Scripts Repo
-      uses: actions/checkout@v2
+    - uses: JS-DevTools/npm-publish@v1
       with:
-        path: ci-scripts
-        repository: pulumi/scripts
-    - name: Unshallow clone for tags
-      run: git fetch --prune --unshallow --tags
-    - name: Install Go
-      uses: actions/setup-go@v2
+        access: "public"
+        token: ${{ secrets.NPM_TOKEN }}
+        package: ${{github.workspace}}/sdk/nodejs/bin/package.json
+    - name: Publish package to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        go-version: ${{ matrix.goversion }}
-    - name: Install pulumictl
-      uses: jaxxstorm/action-install-gh-release@d62853bc9e466834c74cefb34fad78535582e21a
-      with:
-        repo: pulumi/pulumictl
-    - name: Install Pulumi CLI
-      uses: pulumi/action-install-pulumi-cli@b811287a6e06bb7e5d8b91132b839c67e3f9c6ed
-    - name: Setup Node
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{matrix.nodeversion}}
-        registry-url: https://registry.npmjs.org
-    - name: Setup DotNet
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{matrix.dotnetverson}}
-    - name: Setup Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{matrix.pythonversion}}
-    - name: Download provider + tfgen binaries
-      uses: actions/download-artifact@v2
-      with:
-        name: ${{ env.PROVIDER }}-provider.tar.gz
-        path: ${{ github.workspace }}/bin
-    - name: Untar provider binaries
-      run: tar -zxf ${{ github.workspace }}/bin/provider.tar.gz -C ${{ github.workspace
-        }}/bin
-    - name: Restore binary perms
-      run: find ${{ github.workspace }} -name "pulumi-*-${{ env.PROVIDER }}" -print
-        -exec chmod +x {} \;
-    - name: Download SDK
-      uses: actions/download-artifact@v2
-      with:
-        name: ${{ matrix.language  }}-sdk.tar.gz
-        path: ${{ github.workspace}}/sdk/
-    - name: Uncompress SDK folder
-      run: tar -zxf ${{ github.workspace}}/sdk/${{ matrix.language}}.tar.gz -C ${{
-        github.workspace}}/sdk/${{ matrix.language}}
-    - name: Update path
-      run: |
-        echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
-    - name: Install Python deps
-      run: |-
-        pip3 install virtualenv==20.0.23
-        pip3 install pipenv
-    - name: Install dependencies
-      run: make install_${{ matrix.language}}_sdk
-    - name: Run tests
-      run: cd examples && go test -v -count=1 -cover -timeout 2h -tags=${{ matrix.language }} -parallel 4 .
-    strategy:
-      fail-fast: true
-      matrix:
-        dotnetversion:
-        - 3.1.301
-        goversion:
-        - 1.15.x
-        language:
-        - nodejs
-        - python
-        - dotnet
-        - go
-        nodeversion:
-        - 13.x
-        pythonversion:
-        - "3.7"
+        user: __token__
+        password: ${{ secrets.PYPI_PASSWORD }}
+        packages_dir: ${{github.workspace}}/sdk/python/bin/dist
 name: release
 "on":
   push:

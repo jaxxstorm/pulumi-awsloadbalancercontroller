@@ -1,12 +1,11 @@
 archives:
 - id: archive
   name_template: '{{ .Binary }}-{{ .Tag }}-{{ .Os }}-{{ .Arch }}'
-uploads:
-- name: bintray
-  target: https://api.bintray.com/content/jaxxstorm/pulumi/pulumi-awsloadbalancercontroller/{{ .Version }}/
-  username: jaxxstorm
+artifactories:
+- name: lbriggs
   mode: archive
-  method: PUT
+  target: "https://lbriggs.jfrog.io/artifactory/pulumi-packages/{{ .ProjectName }}/"
+  username: goreleaser
 builds:
 - binary: pulumi-resource-awsloadbalancercontroller
   dir: provider
@@ -20,7 +19,7 @@ builds:
   - windows
   - linux
   ldflags:
-  - -X github.com/jaxxstorm/pulumi-awsloadbalancercontroller/provider/pkg/version.Version={{.Tag}}
+  - -X github.com/jaxxstorm/pulumi-awsloadbalancercontroller/provider/pkg/version.Version={{.Tag }}
   main: ./cmd/pulumi-resource-awsloadbalancercontroller/
 changelog:
   skip: true
