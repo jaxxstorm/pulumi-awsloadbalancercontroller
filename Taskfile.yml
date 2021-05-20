@@ -13,11 +13,6 @@ vars:
 
 
 tasks:
-  __default:
-    desc: "The default workflow"
-    cmds:
-      - echo "done"
-
   build:
     desc: "Build providers and all SDKs"
     cmds:
