@@ -41,7 +41,7 @@ jobs:
   build_sdk:
     name: Build ${{ matrix.language }}
     runs-on: ubuntu-latest
-    needs: build_provider
+    needs: publish_provider
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
