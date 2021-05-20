@@ -67,10 +67,10 @@ jobs:
         path: ${{ github.workspace}}/sdk
     - name: Unzip DotNet SDK
       run: tar -zxf ${{ github.workspace}}/sdk/dotnet.tar.gz -C ${{ github.workspace}}/sdk/dotnet
-    - env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      name: Publish SDKs
-      run: ./ci-scripts/ci/publish-tfgen-package ${{ github.workspace }}
+    - uses: JS-DevTools/npm-publish@v1
+      with:
+        token: ${{ secrets.NPM_TOKEN }}
+        package: sdk/nodejs/bin
   build_provider:
     name: Build Provider
     runs-on: ubuntu-latest
