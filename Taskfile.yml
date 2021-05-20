@@ -114,6 +114,6 @@ tasks:
       - task: build:python
       - task: build:nodejs
       - task: build:go
-      - task: build:dotnet
+      # - task: build:dotnet
 
 
