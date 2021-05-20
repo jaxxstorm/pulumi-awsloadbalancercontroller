@@ -2,8 +2,8 @@ archives:
 - id: archive
   name_template: '{{ .Binary }}-{{ .Tag }}-{{ .Os }}-{{ .Arch }}'
 uploads:
-- name: bintray
-  target: https://api.bintray.com/content/jaxxstorm/pulumi/pulumi-awsloadbalancercontroller/{{ .Tag }}
+- name: cloudsmith
+  target: https://dl.cloudsmith.io/public/lbrlabs/pulumi-awsloadbalancercontroller/raw/files/{{ .Tag }}
   username: jaxxstorm
   mode: archive
   method: PUT
