@@ -25,5 +25,6 @@ changelog:
   skip: true
 release:
   disable: false
+  prerelease: auto
 snapshot:
   name_template: '{{ .Tag }}-SNAPSHOT'
