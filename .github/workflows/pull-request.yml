@@ -96,7 +96,7 @@ jobs:
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@v2
       with:
-        args: -f .goreleaser.prerelease.yml --rm-dist --snapshot
+        args: -f .goreleaser.prerelease.yml --rm-dist --skip-validate
         version: latest
       env:
         ARTIFACTORY_LBRIGGS_SECRET: ${{ secrets.ARTIFACTORY_LBRIGGS_SECRET }}
