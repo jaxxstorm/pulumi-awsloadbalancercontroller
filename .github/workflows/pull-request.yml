@@ -70,7 +70,7 @@ jobs:
     - uses: JS-DevTools/npm-publish@v1
       with:
         token: ${{ secrets.NPM_TOKEN }}
-        package: ${{github.workspace}}/sdk/nodejs/bin
+        package: ${{github.workspace}}/sdk/nodejs/bin/package.json
   build_provider:
     name: Build Provider
     runs-on: ubuntu-latest
