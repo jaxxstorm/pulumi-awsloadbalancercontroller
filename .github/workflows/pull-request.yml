@@ -12,7 +12,7 @@ env:
 jobs:
   publish_sdk:
     name: publish_sdk
-    needs: build_sdk
+    needs: [ build_sdk, build_provider ]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
@@ -99,7 +99,7 @@ jobs:
         args: -f .goreleaser.prerelease.yml --rm-dist --snapshot
         version: latest
       env:
-        UPLOAD_BINTRAY_SECRET: ${{ secrets.UPLOAD_BINTRAY_SECRET }}
+        ARTIFACTORY_LBRIGGS_SECRET: ${{ secrets.ARTIFACTORY_LBRIGGS_SECRET }}
   build_sdk:
     name: Build ${{ matrix.language }}
     runs-on: ubuntu-latest

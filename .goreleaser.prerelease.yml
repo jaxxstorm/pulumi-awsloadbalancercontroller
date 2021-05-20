@@ -1,12 +1,11 @@
 archives:
 - id: archive
   name_template: '{{ .Binary }}-{{ .Tag }}-{{ .Os }}-{{ .Arch }}'
-uploads:
-- name: cloudsmith
-  target: https://dl.cloudsmith.io/public/lbrlabs/pulumi-awsloadbalancercontroller/raw/files/{{ .Tag }}
-  username: jaxxstorm
+artifactories:
+- name: lbriggs
   mode: archive
-  method: PUT
+  target: "https://lbriggs.jfrog.io/artifactory/pulumi-packages/{{ .ProjectName }}/"
+  username: goreleaser
 builds:
 - binary: pulumi-resource-awsloadbalancercontroller
   dir: provider
