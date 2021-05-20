@@ -108,7 +108,7 @@ name: main
 "on":
   push:
     branches:
-    - master
+    - main
     paths-ignore:
     - CHANGELOG.md
     tags-ignore:
