@@ -69,6 +69,7 @@ jobs:
       run: tar -zxf ${{ github.workspace}}/sdk/dotnet.tar.gz -C ${{ github.workspace}}/sdk/dotnet
     - uses: JS-DevTools/npm-publish@v1
       with:
+        access: "public"
         token: ${{ secrets.NPM_TOKEN }}
         package: ${{github.workspace}}/sdk/nodejs/bin/package.json
   build_provider:
