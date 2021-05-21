@@ -13,7 +13,7 @@ _utilities.register(
  {
   "pkg": "awsloadbalancercontroller",
   "mod": "index",
-  "fqn": "jaxxstorm-pulumi-awsloadbalancercontroller",
+  "fqn": "jaxxstorm_pulumi_awsloadbalancercontroller",
   "classes": {
    "awsloadbalancercontroller:index:deployment": "Deployment"
   }
@@ -25,7 +25,7 @@ _utilities.register(
  {
   "pkg": "awsloadbalancercontroller",
   "token": "pulumi:providers:awsloadbalancercontroller",
-  "fqn": "jaxxstorm-pulumi-awsloadbalancercontroller",
+  "fqn": "jaxxstorm_pulumi_awsloadbalancercontroller",
   "class": "Provider"
  }
 ]
