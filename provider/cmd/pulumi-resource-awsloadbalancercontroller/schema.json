@@ -50,8 +50,6 @@
                 "installCRDs"
             ],
             "plainInputs": [
-              "oidcIssuer",
-              "oidcProvider",
               "clusterName",
               "installCRDs",
               "ingressClass",
