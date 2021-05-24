@@ -95,11 +95,11 @@ export interface DeploymentArgs {
     /**
      * The OIDC issuer for your EKS cluster
      */
-    oidcIssuer: string;
+    oidcIssuer: pulumi.Input<string>;
     /**
      * The OIDC provider for your EKS cluster
      */
-    oidcProvider: string;
+    oidcProvider: pulumi.Input<string>;
     /**
      * The version of the AWS ingress controller to deploy
      */

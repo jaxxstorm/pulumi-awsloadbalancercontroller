@@ -22,8 +22,8 @@ import (
 type AWSLBControllerArgs struct {
 	Namespace    pulumi.StringInput `pulumi:"namespace"`
 	ClusterName  string             `pulumi:"clusterName"`
-	OidcIssuer   string             `pulumi:"oidcIssuer"`
-	OidcProvider string             `pulumi:"oidcProvider"`
+	OidcIssuer   pulumi.StringInput `pulumi:"oidcIssuer"`
+	OidcProvider pulumi.StringInput `pulumi:"oidcProvider"`
 	InstallCRDs  bool               `pulumi:"installCRDs"`
 	IngressClass string             `pulumi:"ingressClass"`
 	AwsRegion    string             `pulumi:"awsRegion"`
@@ -96,20 +96,23 @@ func NewAWSLBController(ctx *pulumi.Context,
 		return nil, fmt.Errorf("error creating namespace: %v", err)
 	}
 
-	assumeRolePolicyJSON := namespace.Metadata.Name().Elem().ApplyT(
-		func(ns string) (string, error) {
+	assumeRolePolicyJSON := pulumi.All(namespace.Metadata.Name().Elem(), args.OidcIssuer, args.OidcProvider).ApplyT(
+		func(args []interface{}) (string, error) {
+			ns := args[0].(string)
+			issuer := args[1].(string)
+			provider := args[2].(string)
 			policyJSON, err := json.Marshal(map[string]interface{}{
 				"Version": "2012-10-17",
 				"Statement": []interface{}{
 					map[string]interface{}{
 						"Effect": "Allow",
 						"Principal": map[string]interface{}{
-							"Federated": args.OidcProvider,
+							"Federated": provider,
 						},
 						"Action": "sts:AssumeRoleWithWebIdentity",
 						"Condition": map[string]interface{}{
 							"StringEquals": map[string]interface{}{
-								fmt.Sprintf("%s:sub", args.OidcIssuer): fmt.Sprintf("system:serviceaccount:%s:%s-serviceaccount", ns, name),
+								fmt.Sprintf("%s:sub", issuer): fmt.Sprintf("system:serviceaccount:%s:%s-serviceaccount", ns, name),
 							},
 						},
 					},

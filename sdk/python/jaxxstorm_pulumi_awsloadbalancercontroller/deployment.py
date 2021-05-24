@@ -16,8 +16,8 @@ class DeploymentArgs:
                  cluster_name: str,
                  install_crds: bool,
                  namespace: pulumi.Input[str],
-                 oidc_issuer: str,
-                 oidc_provider: str,
+                 oidc_issuer: pulumi.Input[str],
+                 oidc_provider: pulumi.Input[str],
                  aws_region: Optional[str] = None,
                  image_name: Optional[str] = None,
                  ingress_class: Optional[str] = None,
@@ -27,8 +27,8 @@ class DeploymentArgs:
         :param str cluster_name: Name of the cluster the loadbalancer controller is being installed in
         :param bool install_crds: Whether to install the CRDs for the LoadBalancer controller
         :param pulumi.Input[str] namespace: The namespace to create to run the AWS Loadbalancer Controller in.
-        :param str oidc_issuer: The OIDC issuer for your EKS cluster
-        :param str oidc_provider: The OIDC provider for your EKS cluster
+        :param pulumi.Input[str] oidc_issuer: The OIDC issuer for your EKS cluster
+        :param pulumi.Input[str] oidc_provider: The OIDC provider for your EKS cluster
         :param str aws_region: The AWS Region to deploy the controller to
         :param str image_name: The Docker Image to use for the controller deployment
         :param str ingress_class: Ingress class for the controller to satisfy
@@ -86,26 +86,26 @@ class DeploymentArgs:
 
     @property
     @pulumi.getter(name="oidcIssuer")
-    def oidc_issuer(self) -> str:
+    def oidc_issuer(self) -> pulumi.Input[str]:
         """
         The OIDC issuer for your EKS cluster
         """
         return pulumi.get(self, "oidc_issuer")
 
     @oidc_issuer.setter
-    def oidc_issuer(self, value: str):
+    def oidc_issuer(self, value: pulumi.Input[str]):
         pulumi.set(self, "oidc_issuer", value)
 
     @property
     @pulumi.getter(name="oidcProvider")
-    def oidc_provider(self) -> str:
+    def oidc_provider(self) -> pulumi.Input[str]:
         """
         The OIDC provider for your EKS cluster
         """
         return pulumi.get(self, "oidc_provider")
 
     @oidc_provider.setter
-    def oidc_provider(self, value: str):
+    def oidc_provider(self, value: pulumi.Input[str]):
         pulumi.set(self, "oidc_provider", value)
 
     @property
@@ -168,8 +168,8 @@ class Deployment(pulumi.ComponentResource):
                  ingress_class: Optional[str] = None,
                  install_crds: Optional[bool] = None,
                  namespace: Optional[pulumi.Input[str]] = None,
-                 oidc_issuer: Optional[str] = None,
-                 oidc_provider: Optional[str] = None,
+                 oidc_issuer: Optional[pulumi.Input[str]] = None,
+                 oidc_provider: Optional[pulumi.Input[str]] = None,
                  version: Optional[str] = None,
                  __props__=None):
         """
@@ -182,8 +182,8 @@ class Deployment(pulumi.ComponentResource):
         :param str ingress_class: Ingress class for the controller to satisfy
         :param bool install_crds: Whether to install the CRDs for the LoadBalancer controller
         :param pulumi.Input[str] namespace: The namespace to create to run the AWS Loadbalancer Controller in.
-        :param str oidc_issuer: The OIDC issuer for your EKS cluster
-        :param str oidc_provider: The OIDC provider for your EKS cluster
+        :param pulumi.Input[str] oidc_issuer: The OIDC issuer for your EKS cluster
+        :param pulumi.Input[str] oidc_provider: The OIDC provider for your EKS cluster
         :param str version: The version of the AWS ingress controller to deploy
         """
         ...
@@ -215,8 +215,8 @@ class Deployment(pulumi.ComponentResource):
                  ingress_class: Optional[str] = None,
                  install_crds: Optional[bool] = None,
                  namespace: Optional[pulumi.Input[str]] = None,
-                 oidc_issuer: Optional[str] = None,
-                 oidc_provider: Optional[str] = None,
+                 oidc_issuer: Optional[pulumi.Input[str]] = None,
+                 oidc_provider: Optional[pulumi.Input[str]] = None,
                  version: Optional[str] = None,
                  __props__=None):
         if opts is None:

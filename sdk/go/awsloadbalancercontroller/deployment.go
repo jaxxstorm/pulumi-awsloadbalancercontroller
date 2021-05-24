@@ -25,6 +25,12 @@ func NewDeployment(ctx *pulumi.Context,
 	if args.Namespace == nil {
 		return nil, errors.New("invalid value for required argument 'Namespace'")
 	}
+	if args.OidcIssuer == nil {
+		return nil, errors.New("invalid value for required argument 'OidcIssuer'")
+	}
+	if args.OidcProvider == nil {
+		return nil, errors.New("invalid value for required argument 'OidcProvider'")
+	}
 	var resource Deployment
 	err := ctx.RegisterRemoteComponentResource("awsloadbalancercontroller:index:deployment", name, args, &resource, opts...)
 	if err != nil {
@@ -69,9 +75,9 @@ type DeploymentArgs struct {
 	// The namespace to create to run the AWS Loadbalancer Controller in.
 	Namespace pulumi.StringInput
 	// The OIDC issuer for your EKS cluster
-	OidcIssuer string
+	OidcIssuer pulumi.StringInput
 	// The OIDC provider for your EKS cluster
-	OidcProvider string
+	OidcProvider pulumi.StringInput
 	// The version of the AWS ingress controller to deploy
 	Version *string
 }

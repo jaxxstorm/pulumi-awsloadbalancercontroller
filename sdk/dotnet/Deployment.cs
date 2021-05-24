@@ -79,13 +79,13 @@ namespace Pulumi.Awsloadbalancercontroller
         /// The OIDC issuer for your EKS cluster
         /// </summary>
         [Input("oidcIssuer", required: true)]
-        public string OidcIssuer { get; set; } = null!;
+        public Input<string> OidcIssuer { get; set; } = null!;
 
         /// <summary>
         /// The OIDC provider for your EKS cluster
         /// </summary>
         [Input("oidcProvider", required: true)]
-        public string OidcProvider { get; set; } = null!;
+        public Input<string> OidcProvider { get; set; } = null!;
 
         /// <summary>
         /// The version of the AWS ingress controller to deploy
