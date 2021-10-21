@@ -8,5 +8,5 @@ require (
 	github.com/pulumi/pulumi-kubernetes/sdk/v3 v3.2.0
 	github.com/pulumi/pulumi-tls/sdk/v4 v4.0.0
 	github.com/pulumi/pulumi/pkg/v3 v3.2.2-0.20210507045940-b4323ea437fd
-	github.com/pulumi/pulumi/sdk/v3 v3.3.1
+	github.com/pulumi/pulumi/sdk/v3 v3.16.0
 )
